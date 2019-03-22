@@ -1292,6 +1292,7 @@ class Root(object):
         """ Load all addons from addons path containing static files and
         controllers and configure them.  """
         # TODO should we move this to ir.http so that only configured modules are served ?
+        # TODO @Christophe Simonis Will this be done one day ?
         statics = {}
         for addons_path in odoo.modules.module.ad_paths:
             for module in sorted(os.listdir(str(addons_path))):
@@ -1311,6 +1312,10 @@ class Root(object):
 
         if statics:
             _logger.info("HTTP Configuring static files")
+        # It's normally possible to server this static by nginx (even with authentication)
+        # using werkzeug for this is slow. Could not find any documentation or option to do it on odoo.sh
+        # since on odoo.sh "partners" don't have access to nginx config ...
+        # @Christophe Simonis Can you enlighten me ?
         app = werkzeug.wsgi.SharedDataMiddleware(self.dispatch, statics, cache_timeout=STATIC_CACHE)
         self.dispatch = DisableCacheMiddleware(app)
 
