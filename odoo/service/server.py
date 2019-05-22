@@ -32,6 +32,9 @@ if os.name == 'posix':
         INOTIFY_LISTEN_EVENTS = IN_MODIFY | IN_CREATE | IN_MOVED_TO
     except ImportError:
         inotify = None
+    except AttributeError:
+        # on "unix" os without inotify mostly mac os and some bsd likes ...
+        inotify = None
 else:
     # Windows shim
     signal.SIGHUP = -1
